@@ -39,6 +39,7 @@ O **GT Edition** oferece uma reinterpretação fiel do modo carreira clássico:
    ```bash
    cd launcher && npm install
    ```
+   Isso baixa o React, ReactDOM, React Router e Babel para a pasta `node_modules`, permitindo executar o app sem depender de CDN.
 2. Em outro terminal, instale os requisitos do backend e inicie a API:
    ```bash
    python3 -m venv venv
