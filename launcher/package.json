@@ -1,0 +1,14 @@
+{
+  "name": "ac-gt-launcher",
+  "version": "0.1.0",
+  "main": "electron.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^25.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.0"
+  }
+}

@@ -1,0 +1,19 @@
+node_modules
+*.pyc
+__pycache__/
+
+# Ignore virtual environment directories
+venv/
+.env
+
+# Ignore build directories
+dist/
+build/
+*.egg-info/ 
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore launcher node_modules
+launcher/node_modules/
