@@ -43,6 +43,7 @@ O **GT Edition** oferece uma reinterpretação fiel do modo carreira clássico:
    ```bash
    python3 -m venv venv
    source venv/bin/activate
+   
    pip install -r backend/requirements.txt
    uvicorn backend.fastapi_app:app --reload
    ```
