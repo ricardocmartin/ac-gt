@@ -26,8 +26,8 @@ O **GT Edition** oferece uma reinterpretação fiel do modo carreira clássico:
 | Camada        | Tecnologia                         |
 |---------------|-------------------------------------|
 | Interface     | Electron + React (App Desktop)     |
-| Backend       | Node.js ou Python (Flask/FastAPI)  |
-| Banco de dados| SQLite                             |
+| Backend       | Node.js (processo main do Electron) |
+| Banco de dados| JSON local (arquivo savegame)      |
 | Game Target   | Assetto Corsa (Steam + Proton OK)  |
 | Assets        | JSON para carros, eventos, economia|
 
@@ -40,20 +40,25 @@ O **GT Edition** oferece uma reinterpretação fiel do modo carreira clássico:
    cd launcher && npm install
    ```
    Isso baixa o React, ReactDOM, React Router e Babel para a pasta `node_modules`, permitindo executar o app sem depender de CDN.
-2. Em outro terminal, instale os requisitos do backend e inicie a API:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   
-   pip install -r backend/requirements.txt
-   uvicorn backend.fastapi_app:app --reload
-   ```
-3. Por fim, execute o launcher Electron:
+2. Execute o launcher Electron:
    ```bash
    npm start
    ```
 
-Isso abrirá uma janela 1280x720 com o menu inicial do **Assetto Corsa: GT Edition**.
+Isso abrirá uma janela 1280x720 com o menu inicial do **Assetto Corsa: GT Edition**.  
+A lógica de dados roda localmente dentro do processo main do Electron, via IPC seguro (`preload.js`).
+
+### Importar carros e pistas do Assetto Corsa
+
+Para popular a base com os mesmos carros e pistas da sua instalação:
+
+```bash
+node scripts/import-assetto-corsa.js --source "/caminho/para/assettocorsa"
+```
+
+Isso gera/atualiza:
+- `assets/cars.json`
+- `assets/tracks.json`
 
 ## 📁 Estrutura do Projeto
 

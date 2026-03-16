@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "electron.js",
   "scripts": {
-    "start": "electron ."
+    "start": "env -u ELECTRON_RUN_AS_NODE -u ELECTRON_NO_ATTACH_CONSOLE electron ."
   },
   "dependencies": {
     "electron": "^25.3.0",

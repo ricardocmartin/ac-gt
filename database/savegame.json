@@ -1,0 +1,24 @@
+{
+  "profile": {
+    "name": "Player",
+    "credits": 10000,
+    "progress": 0
+  },
+  "cars": [
+    {
+      "id": 1,
+      "name": "Fiat Punto GT",
+      "owned": false
+    },
+    {
+      "id": 2,
+      "name": "Toyota Supra",
+      "owned": false
+    },
+    {
+      "id": 3,
+      "name": "Nissan Skyline GT-R",
+      "owned": false
+    }
+  ]
+}

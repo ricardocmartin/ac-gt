@@ -4,19 +4,632 @@
   <meta charset="UTF-8" />
   <title>Assetto Corsa: GT Edition</title>
   <style>
-    body { margin: 0; font-family: sans-serif; background: #000; color: #fff; text-align:center; }
-    #logo { margin-top: 20px; width: 200px; }
-    nav a { display: block; margin: 10px; color: #0f0; text-decoration: none; }
-    .menu-btn { display: block; margin: 10px auto; padding: 10px 20px; color: #0f0; border: 1px solid #0f0; background: transparent; cursor: pointer; width: 200px; }
-    .disabled { color: #777; border-color: #777; cursor: not-allowed; }
+    :root {
+      --text: #f5f7ff;
+      --shadow: rgba(0, 0, 0, 0.75);
+      --panel: rgba(8, 14, 36, 0.55);
+      --arcade: #2458ff;
+      --simulation: #ce1f2b;
+      --options: #f7f7f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Trebuchet MS", "Arial Black", sans-serif;
+      color: var(--text);
+      background: #0a122e;
+    }
+
+    #root {
+      width: 100%;
+      height: 100%;
+    }
+
+    .splash-screen {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(12px, 2.8vh, 26px);
+      padding: clamp(14px, 3vh, 28px);
+      background:
+        linear-gradient(180deg, rgba(6, 8, 24, 0.22) 0%, rgba(6, 8, 24, 0.66) 100%),
+        url("../assets/splash-screen.png") center center / cover no-repeat;
+      text-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .brand-logo {
+      width: min(50vw, 540px);
+      max-width: 82vw;
+      max-height: 38vh;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      filter: contrast(1.15) brightness(1.08) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.72));
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .splash-menu {
+      width: min(420px, 84vw);
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(1px);
+      padding: clamp(12px, 2.1vh, 18px) clamp(14px, 2.2vw, 20px);
+    }
+
+    .splash-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: clamp(26px, 4.2vw, 36px);
+      font-style: italic;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      margin: 6px 0;
+    }
+
+    .splash-option:hover {
+      transform: translateX(4px);
+      transition: transform 130ms ease-out;
+    }
+
+    .option-mark {
+      display: inline-block;
+      width: 26px;
+      height: 8px;
+      border-radius: 2px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+      flex: 0 0 auto;
+    }
+
+    .arcade-mark {
+      background: var(--arcade);
+    }
+
+    .simulation-mark {
+      background: var(--simulation);
+    }
+
+    .options-mark {
+      background: var(--options);
+    }
+
+    .mode-screen {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(180deg, rgba(6, 8, 24, 0.35) 0%, rgba(6, 8, 24, 0.82) 100%),
+        url("../assets/splash-screen.png") center center / cover no-repeat;
+      text-align: center;
+      text-shadow: 0 2px 8px var(--shadow);
+      padding: 24px;
+    }
+
+    .mode-screen h2 {
+      margin: 0 0 8px 0;
+      font-size: clamp(34px, 5vw, 52px);
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+
+    .mode-screen p {
+      margin: 0 0 22px 0;
+      font-size: clamp(16px, 2.2vw, 24px);
+    }
+
+    .back-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 10px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .arcade-screen {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(12px, 2vw, 22px);
+      background:
+        linear-gradient(180deg, rgba(24, 108, 198, 0.74) 0%, rgba(64, 140, 224, 0.42) 34%, rgba(35, 34, 32, 0.65) 62%, rgba(18, 16, 15, 0.92) 100%),
+        radial-gradient(ellipse at 50% 62%, rgba(248, 233, 194, 0.56) 0 18%, transparent 34%),
+        linear-gradient(160deg, rgba(0, 0, 0, 0.44) 0 16%, transparent 29% 71%, rgba(0, 0, 0, 0.48) 84% 100%),
+        url("../assets/splash-screen.png") center center / cover no-repeat;
+    }
+
+    .arcade-screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          100deg,
+          transparent 0 7%,
+          rgba(255, 255, 255, 0.1) 7% 8.2%,
+          transparent 8.2% 17%
+        ),
+        linear-gradient(90deg, transparent 0 48.7%, rgba(248, 241, 221, 0.46) 48.7% 51.3%, transparent 51.3% 100%),
+        radial-gradient(ellipse at 50% 72%, rgba(255, 226, 167, 0.34) 0 20%, transparent 40%);
+      mix-blend-mode: screen;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .arcade-screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, transparent 0 54%, rgba(0, 0, 0, 0.52) 88%, rgba(0, 0, 0, 0.84) 100%),
+        radial-gradient(circle at 10% 86%, rgba(173, 16, 16, 0.32) 0 10%, transparent 25%),
+        radial-gradient(circle at 90% 84%, rgba(16, 28, 139, 0.34) 0 12%, transparent 28%);
+      pointer-events: none;
+    }
+
+    .arcade-panel {
+      width: min(760px, 96vw);
+      padding: clamp(14px, 2vh, 24px) clamp(14px, 3vw, 30px);
+      position: relative;
+      z-index: 1;
+      background: rgba(8, 10, 15, 0.46);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .arcade-title {
+      margin: 0 0 12px 0;
+      color: #d7e6ff;
+      font-style: italic;
+      font-weight: 900;
+      font-size: clamp(30px, 5.2vw, 54px);
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.88);
+    }
+
+    .arcade-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .arcade-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      width: fit-content;
+      text-decoration: none;
+      color: #f4f4f4;
+      font-weight: 900;
+      font-style: italic;
+      font-size: clamp(24px, 4.4vw, 47px);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+    }
+
+    .arcade-option:hover {
+      transform: translateX(3px);
+      filter: brightness(1.08);
+      transition: transform 120ms ease-out, filter 120ms ease-out;
+    }
+
+    .arcade-bullet {
+      width: clamp(14px, 1.8vw, 20px);
+      height: clamp(14px, 1.8vw, 20px);
+      border: 1px solid rgba(0, 0, 0, 0.7);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+      flex: 0 0 auto;
+    }
+
+    .arcade-green { background: #07a891; }
+    .arcade-red { background: #ce2014; }
+    .arcade-blue { background: #375ac9; }
+    .arcade-purple { background: #7d77b8; }
+
+    .arcade-back {
+      display: inline-block;
+      margin-top: 12px;
+      color: #d6d9df;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: clamp(12px, 1.4vw, 16px);
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid rgba(214, 217, 223, 0.6);
+    }
+
+    .simulation-screen {
+      width: 100%;
+      height: 100%;
+      padding: clamp(8px, 1.8vw, 18px);
+      background: #111;
+    }
+
+    .brand-screen {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #070707;
+      color: #f2f2f2;
+      padding: clamp(12px, 2vh, 18px) clamp(18px, 2.2vw, 28px);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+    }
+
+    .brand-bg-car {
+      position: absolute;
+      inset: 0;
+      width: 115%;
+      height: 115%;
+      object-fit: cover;
+      filter: blur(5px) saturate(1.15) contrast(1.15) brightness(0.52);
+      transform: translate(-4%, -3%) skewX(-6deg) scale(1.07);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .brand-screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(100deg, rgba(0, 0, 0, 0.72) 12%, rgba(0, 0, 0, 0.28) 55%, rgba(0, 0, 0, 0.78) 100%),
+        radial-gradient(circle at 40% 52%, rgba(184, 132, 31, 0.38) 0 23%, transparent 38%);
+      pointer-events: none;
+    }
+
+    .brand-header,
+    .brand-side,
+    .brand-content,
+    .brand-footer {
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(214, 214, 214, 0.78);
+      padding-bottom: 5px;
+      margin-bottom: 14px;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-header h2 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 44px);
+      font-weight: 900;
+      font-style: italic;
+    }
+
+    .brand-header span {
+      font-size: clamp(18px, 2.8vw, 34px);
+      font-weight: 900;
+      font-style: italic;
+    }
+
+    .brand-side {
+      position: absolute;
+      left: clamp(14px, 1.8vw, 24px);
+      top: clamp(84px, 14vh, 108px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 3;
+    }
+
+    .brand-exit {
+      width: clamp(52px, 5.4vw, 74px);
+      height: clamp(52px, 5.4vw, 74px);
+      border-radius: 50%;
+      border: 3px solid #bb8600;
+      color: #bb8600;
+      text-decoration: none;
+      display: grid;
+      place-items: center;
+      font-size: clamp(12px, 1.4vw, 17px);
+      font-weight: 900;
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    .brand-side-link {
+      width: clamp(34px, 3.4vw, 46px);
+      height: clamp(34px, 3.4vw, 46px);
+      border: 2px solid #bb8600;
+      background: rgba(0, 0, 0, 0.62);
+      text-decoration: none;
+      display: grid;
+      place-items: center;
+    }
+
+    .brand-side-icon {
+      color: #bb8600;
+      font-size: clamp(13px, 1.45vw, 18px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .brand-content {
+      width: 100%;
+      height: calc(100% - 154px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: clamp(92px, 9vw, 120px);
+      padding-right: clamp(4px, 1vw, 18px);
+      gap: clamp(20px, 4vh, 42px);
+    }
+
+    .brand-title-mark {
+      font-size: clamp(34px, 6.1vw, 86px);
+      font-weight: 900;
+      color: rgba(242, 242, 242, 0.92);
+      letter-spacing: 0.02em;
+    }
+
+    .brand-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(90px, 1fr));
+      gap: clamp(8px, 1.6vw, 20px);
+      max-width: 1060px;
+    }
+
+    .brand-option {
+      aspect-ratio: 1 / 1;
+      border: 8px solid #bb8600;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      background: rgba(0, 0, 0, 0.72);
+      color: #e8e8e8;
+      font-size: clamp(15px, 1.9vw, 30px);
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      line-height: 1.05;
+      padding: 10px;
+      transition: transform 120ms ease-out, filter 120ms ease-out;
+    }
+
+    .brand-option:hover {
+      transform: scale(1.04);
+      filter: brightness(1.08);
+    }
+
+    .brand-footer {
+      position: absolute;
+      left: clamp(18px, 2.2vw, 28px);
+      right: clamp(18px, 2.2vw, 28px);
+      bottom: clamp(10px, 1.5vh, 16px);
+      border-top: 2px solid rgba(214, 214, 214, 0.78);
+      padding-top: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 900;
+      font-style: italic;
+      font-size: clamp(13px, 1.5vw, 22px);
+      color: #d7b35a;
+      letter-spacing: 0.03em;
+    }
+
+    .simulation-map {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background-color: #24272f;
+      background-image:
+        linear-gradient(115deg, transparent 0 12%, rgba(10, 202, 176, 0.55) 12% 20%, transparent 20% 100%),
+        linear-gradient(210deg, transparent 0 22%, rgba(10, 202, 176, 0.55) 22% 33%, transparent 33% 100%),
+        linear-gradient(26deg, transparent 0 64%, rgba(10, 202, 176, 0.55) 64% 74%, transparent 74% 100%),
+        linear-gradient(0deg, transparent 0 6%, #7f868f 6% 7.4%, transparent 7.4% 13%),
+        linear-gradient(32deg, transparent 0 16%, #7f868f 16% 17.3%, transparent 17.3% 33%),
+        linear-gradient(90deg, transparent 0 44%, #7f868f 44% 45.2%, transparent 45.2% 60%),
+        linear-gradient(142deg, transparent 0 50%, #7f868f 50% 51.3%, transparent 51.3% 100%),
+        linear-gradient(180deg, rgba(10, 12, 19, 0.2), rgba(10, 12, 19, 0.72));
+    }
+
+    .map-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+      transition: transform 120ms ease-out, filter 120ms ease-out;
+    }
+
+    .map-node:hover {
+      transform: translate(-50%, -50%) scale(1.04);
+      filter: brightness(1.07);
+    }
+
+    .node-icon {
+      width: 24px;
+      height: 24px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #cc9700;
+      color: #0a0a0a;
+      font-weight: 900;
+      font-size: 13px;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      flex: 0 0 auto;
+    }
+
+    .node-label {
+      font-size: clamp(16px, 2.4vw, 40px);
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .menu-node .node-label {
+      color: #f2f4ff;
+    }
+
+    .menu-node::before {
+      content: "";
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      background: #c70000;
+      border: 1px solid rgba(0, 0, 0, 0.7);
+      flex: 0 0 auto;
+    }
+
+    .exit-node {
+      padding: 9px 12px;
+      background: #161616;
+      border: 3px solid #cc9700;
+      border-radius: 999px;
+    }
+
+    .exit-node .node-label {
+      font-size: clamp(15px, 1.8vw, 24px);
+      color: #cc9700;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 980px) {
+      .node-label {
+        font-size: clamp(14px, 3.2vw, 24px);
+      }
+
+      .node-icon,
+      .menu-node::before {
+        width: 21px;
+        height: 21px;
+      }
+
+      .brand-options {
+        grid-template-columns: repeat(2, minmax(130px, 1fr));
+        max-width: 540px;
+      }
+
+      .brand-content {
+        justify-content: flex-start;
+        padding-top: 20px;
+      }
+    }
+
+    @media (max-width: 680px), (max-height: 640px) {
+      .simulation-screen {
+        padding: 6px;
+      }
+
+      .node-label {
+        font-size: clamp(12px, 3.5vw, 20px);
+      }
+
+      .map-node {
+        gap: 5px;
+      }
+
+      .exit-node {
+        padding: 7px 10px;
+      }
+
+      .arcade-panel {
+        width: 98vw;
+      }
+
+      .arcade-option {
+        font-size: clamp(22px, 8.2vw, 35px);
+      }
+
+      .brand-header {
+        margin-bottom: 8px;
+      }
+
+      .brand-side {
+        left: 8px;
+      }
+
+      .brand-content {
+        padding-left: 60px;
+        gap: 12px;
+      }
+
+      .brand-options {
+        grid-template-columns: repeat(2, minmax(94px, 1fr));
+        gap: 8px;
+      }
+
+      .brand-option {
+        border-width: 5px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .brand-logo {
+        width: min(66vw, 460px);
+        max-height: 32vh;
+      }
+
+      .splash-menu {
+        width: min(390px, 88vw);
+      }
+
+      .splash-option {
+        font-size: clamp(22px, 5vw, 31px);
+      }
+    }
+
+    @media (max-height: 680px) {
+      .splash-screen {
+        justify-content: flex-start;
+        padding-top: clamp(20px, 5vh, 42px);
+      }
+
+      .brand-logo {
+        width: min(46vw, 410px);
+        max-height: 26vh;
+      }
+
+      .splash-option {
+        font-size: clamp(20px, 4.4vh, 30px);
+        margin: 4px 0;
+      }
+    }
   </style>
 </head>
 <body>
-  <img id="logo" src="../assets/logo.png" alt="Logo">
   <div id="root"></div>
-  <audio id="bgm" src="../music/menu_theme.mp3" loop autoplay></audio>
   <script src="./node_modules/react/umd/react.development.js"></script>
   <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+  <script src="./node_modules/@remix-run/router/dist/router.umd.js"></script>
+  <script src="./node_modules/react-router/dist/umd/react-router.development.js"></script>
   <script src="./node_modules/react-router-dom/dist/umd/react-router-dom.development.js"></script>
   <script src="./node_modules/@babel/standalone/babel.min.js"></script>
   <script type="text/babel" src="./main.jsx"></script>
